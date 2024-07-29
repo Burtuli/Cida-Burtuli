@@ -1,9 +1,10 @@
+
 -- phpMyAdmin SQL Dump
 -- version 4.9.5deb2
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Tempo de geração: 29-Jul-2024 às 10:55
+-- Tempo de geração: 29-Jul-2024 às 11:59
 -- Versão do servidor: 8.0.37-0ubuntu0.20.04.3
 -- versão do PHP: 7.4.3-4ubuntu2.23
 
@@ -21,6 +22,20 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `reserva_de_lab`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `AgendamentoLaboratorio`
+--
+
+CREATE TABLE `AgendamentoLaboratorio` (
+  `id` int NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `data` date NOT NULL,
+  `horario` time NOT NULL,
+  `duracao` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -47,11 +62,18 @@ CREATE TABLE `clientes` (
 INSERT INTO `clientes` (`id`, `nome`, `cpf`, `email`, `telefone`, `endereco`, `cidade`, `estado`, `cep`) VALUES
 (3, 'Guilherme', '159.633.649-81', 'guilhermeburtuli29@gmail.com', '(45) 99954-5805', 'Rua parana', 'Cascavel', 'pr', '85807-040'),
 (4, 'Matheus', '138.067.908-57', 'matheus.souda@gmail.com', '(45) 99840-6735', 'Rua itauba', 'Cascavel', 'pr', '85807-675'),
-(6, 'Daniel', '123.123.123-45', 'anabell.sosa@escola.pr.gov.br', '(45) 99954-5345', 'Rua parana', 'Cascavel', 'pr', '85807-123');
+(6, 'Daniel', '123.123.123-45', 'anabell.sosa@escola.pr.gov.br', '(45) 99954-5345', 'Rua parana', 'Cascavel', 'pr', '85807-123'),
+(8, 'Clara', '321.123.252-78', 'claramuler@gmail.com', '(45) 99987-1236', 'Rua jacaranda', 'Perola', 'pr', '82365-647');
 
 --
 -- Índices para tabelas despejadas
 --
+
+--
+-- Índices para tabela `AgendamentoLaboratorio`
+--
+ALTER TABLE `AgendamentoLaboratorio`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Índices para tabela `clientes`
@@ -64,10 +86,16 @@ ALTER TABLE `clientes`
 --
 
 --
+-- AUTO_INCREMENT de tabela `AgendamentoLaboratorio`
+--
+ALTER TABLE `AgendamentoLaboratorio`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de tabela `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
