@@ -1,0 +1,67 @@
+/* Estilos gerais */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #a6a9ac;
+    padding: 20px;
+    text-align: center;
+}
+
+h2 {
+    color: #fff9f9;
+}
+
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #446277;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    background-image: url('cvlogo\ \(1\).png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 200px;
+    height: 200px;
+    left: 30px;
+    top: 30px;
+    position: absolute;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #000000;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #164d6d;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    form {
+        padding: 10px;
+    }
+}
