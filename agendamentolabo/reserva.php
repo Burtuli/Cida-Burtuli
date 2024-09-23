@@ -1,9 +1,10 @@
 <?php
+include_once('config.php');
 
 // Configuração do banco de dados
 $host = "localhost"; // Endereço do servidor do banco de dados
 $usuario = "root"; // Usuário do banco de dados
-$senha = "escola"; // Senha do banco de dados
+$senha = ""; // Senha do banco de dados
 $banco = "reserva_de_lab"; // Nome do banco de dados
 
 try {
@@ -12,32 +13,65 @@ try {
     
     // Define PDO para lançar exceções em caso de erro
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
+
+    // Função para verificar conflitos de horários
+    function verificarConflito($data, $horario, $duracao, $conn) {
+        // Converte a data e hora de início e fim para DATETIME
+        $data_inicio = date("Y-m-d H:i:s", strtotime("$data $horario"));
+        $data_fim = date("Y-m-d H:i:s", strtotime("$data_inicio +$duracao minutes"));
+
+        // SQL para verificar se existe algum agendamento que se sobrepõe
+        $sql = "SELECT * FROM AgendamentoLaboratorio 
+                WHERE data = :data
+                AND (
+                    (:data_inicio < DATE_ADD(horario, INTERVAL duracao MINUTE) AND :data_fim > horario)
+                )";
+        
+        // Prepara a declaração
+        $stmt = $conn->prepare($sql);
+
+        // Bind dos parâmetros
+        $stmt->bindParam(':data', $data);
+        $stmt->bindParam(':data_inicio', $data_inicio);
+        $stmt->bindParam(':data_fim', $data_fim);
+        
+        // Executa a consulta
+        $stmt->execute();
+
+        // Se encontrar algum registro, significa que há conflito
+        return $stmt->rowCount() > 0;
+    }
+
     // Processamento do formulário quando enviado
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Coleta os dados do formulário
         $nome = $_POST['nome'];
         $data = $_POST['data'];
         $horario = $_POST['horario'];
-        $duracao = $_POST['duracao'];
-        
-        // Prepara a instrução SQL para inserção
-        $sql = "INSERT INTO AgendamentoLaboratorio (nome, data, horario, duracao) 
-                VALUES (:nome, :data, :horario, :duracao)";
-        
-        // Prepara a declaração
-        $stmt = $conn->prepare($sql);
-        
-        // Bind dos parâmetros
-        $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':data', $data);
-        $stmt->bindParam(':horario', $horario);
-        $stmt->bindParam(':duracao', $duracao);
-        
-        // Executa a inserção
-        $stmt->execute();
-        
-        echo "Agendamento realizado com sucesso!";
+        $duracao = $_POST['duracao'] * 60; // Converte horas para minutos
+
+        // Verifica se há conflito de horários
+        if (verificarConflito($data, $horario, $duracao, $conn)) {
+            echo "Este horário já está reservado. Por favor, escolha outro.";
+        } else {
+            // Prepara a instrução SQL para inserção
+            $sql = "INSERT INTO AgendamentoLaboratorio (nome, data, horario, duracao) 
+                    VALUES (:nome, :data, :horario, :duracao)";
+            
+            // Prepara a declaração
+            $stmt = $conn->prepare($sql);
+            
+            // Bind dos parâmetros
+            $stmt->bindParam(':nome', $nome);
+            $stmt->bindParam(':data', $data);
+            $stmt->bindParam(':horario', $horario);
+            $stmt->bindParam(':duracao', $duracao);
+            
+            // Executa a inserção
+            $stmt->execute();
+            
+            echo "Agendamento realizado com sucesso!";
+        }
     }
 } catch(PDOException $e) {
     echo "Erro ao conectar ao banco de dados: " . $e->getMessage();
@@ -45,9 +79,8 @@ try {
 
 // Fecha a conexão
 $conn = null;
+?>
 
-?>
-?>
 
 
 
@@ -58,84 +91,7 @@ $conn = null;
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agendamento de Laboratório de Informática</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-    }
-
-    header {
-        background-color: #007bff;
-        color: #fff;
-        padding: 10px 0;
-        text-align: center;
-    }
-
-    nav {
-        background-color: #f4f4f4;
-        padding: 10px;
-    }
-
-    nav ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-    }
-
-    nav ul li {
-        margin-right: 20px;
-    }
-
-    .container {
-        max-width: 1200px;
-        margin: 20px auto;
-        padding: 20px;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-    }
-
-    .form-group input,
-    .form-group select {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-    .form-group button {
-        padding: 8px 20px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .form-group button:hover {
-        background-color: #0056b3;
-    }
-
-    footer {
-        background-color: #333;
-        color: #fff;
-        text-align: center;
-        padding: 10px 0;
-    }
-</style>
-
-
-
-
+<link rel="stylesheet" href="reserva.css">
 </head>
 <body>
 <header>

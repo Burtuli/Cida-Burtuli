@@ -1,7 +1,7 @@
 <?php
 $dbHost = 'Localhost';
     $dbUsername = 'root';
-    $dbPassword = 'escola';
+    $dbPassword = '';
     $dbName = 'reserva_de_lab';
    
     $conexao = new mysqli($dbHost,$dbUsername,$dbPassword,$dbName);
@@ -16,4 +16,3 @@ $dbHost = 'Localhost';
      echo "Conexão efetuada com sucesso";
     }
 ?>
-
